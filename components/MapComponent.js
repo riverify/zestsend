@@ -82,8 +82,7 @@ export default function MapComponent({ ipInfo, peerIpInfo, distance, onError }) 
   };
 
   // 使用备用的Mapbox token，以防环境变量未设置
-  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || 
-                       "pk.eyJ1IjoicmF2ZWxsb2giLCJhIjoiY2xvenkwOHd1MDFhbzJrbzZ4bWR5NnlpMCJ9.X6bT4qCVnfA-PsBfGcS8eg";
+  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
   try {
     return (

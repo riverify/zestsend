@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import FileTransfer from '../../components/FileTransfer';
 import Chat from '../../components/Chat';
-// import IPMap from '../../components/IPMap'; // Removed for GitHub push
+import IPMap from '../../components/IPMap';
 import LogConsole from '../../components/LogConsole';
 import ConnectionStatus from '../../components/ConnectionStatus';
 import MediaChat from '../../components/MediaChat'; 
@@ -1238,8 +1238,7 @@ export default function Room() {
               className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6"
             >
               <h2 className="text-lg font-medium mb-4">连接地图</h2>
-              {/* <IPMap ipInfo={ipInfo} peerIpInfo={peerIpInfo} /> */}
-              <p className="text-gray-500 text-sm">地图功能已移除</p>
+              <IPMap ipInfo={ipInfo} peerIpInfo={peerIpInfo} />
             </motion.div>
           </div>
 

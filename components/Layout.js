@@ -104,24 +104,7 @@ export default function Layout({ children }) {
 
         <footer className="bg-white dark:bg-gray-800 py-6 border-t border-gray-200 dark:border-gray-700">
           <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-300">
-            <p>© {new Date().getFullYear()} ZestSend. 安全、私密的P2P文件传输。</p>
-            <p className="mt-2 text-sm">
-              <a 
-                href="https://github.com/riverify/zestsend" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="underline hover:text-indigo-600 dark:hover:text-indigo-400"
-                data-umami-event="访问GitHub链接-页脚"
-              >
-                GitHub:RavelloH/zestsend
-              </a>. Made by <a 
-                href="https://ravelloh.top/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="underline hover:text-indigo-600 dark:hover:text-indigo-400"
-                data-umami-event="访问开发者主页"
-              >RavelloH</a>
-            </p>
+            <p>© {new Date().getFullYear()} ZestSend. 安全、私密的 P2P 文件传输。</p>
           </div>
         </footer>
       </div>

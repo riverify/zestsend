@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix"
   },
   "dependencies": {
     "@nextui-org/react": "^2.6.11",
@@ -20,8 +22,8 @@
     "next-themes": "^0.2.1",
     "peerjs": "^1.5.1",
     "postcss": "^8",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.12.0",
     "react-leaflet": "^4.2.1",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.0.4"
+    "eslint-config-next": "14.2.35",
+    "typescript": "^5"
   }
 }

@@ -85,7 +85,7 @@ export default function Layout({ children }) {
               <motion.a
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                href="https://github.com/ravelloh/zestsend"
+                href="https://github.com/riverify/zestsend"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
@@ -107,7 +107,7 @@ export default function Layout({ children }) {
             <p>© {new Date().getFullYear()} ZestSend. 安全、私密的P2P文件传输。</p>
             <p className="mt-2 text-sm">
               <a 
-                href="https://github.com/ravelloh/zestsend" 
+                href="https://github.com/riverify/zestsend" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="underline hover:text-indigo-600 dark:hover:text-indigo-400"

@@ -1,0 +1,103 @@
+# ZestSend - Secure P2P File Transfer
+# Docker Compose with security hardening
+
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # Redis - Signaling Server (for WebRTC handshake only)
+  # ---------------------------------------------------------------------------
+  zestsend-redis:
+    image: redis:7.2.10-alpine
+    container_name: zestsend-redis
+    restart: unless-stopped
+    networks:
+      - zestsend-network
+    volumes:
+      - /opt/docker-data/zestsend/redis-data:/data
+    # Security hardening: Protected mode + authentication
+    command: >
+      redis-server
+      --appendonly yes
+      --protected-mode yes
+      --requirepass ${REDIS_PASSWORD:-zestsend_secure_redis_2026}
+      --bind 0.0.0.0
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-zestsend_secure_redis_2026}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-zestsend_secure_redis_2026}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M
+
+  # ---------------------------------------------------------------------------
+  # Next.js Application
+  # ---------------------------------------------------------------------------
+  zestsend-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zestsend-app
+    restart: unless-stopped
+    networks:
+      - zestsend-network
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-zestsend_secure_redis_2026}@zestsend-redis:6379
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+    ports:
+      - "18850:3000"
+    depends_on:
+      zestsend-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=128M
+
+# -----------------------------------------------------------------------------
+# Network Configuration
+# -----------------------------------------------------------------------------
+networks:
+  zestsend-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# -----------------------------------------------------------------------------
+# Volume Configuration
+# -----------------------------------------------------------------------------
+volumes:
+  redis-data:
+    driver: local

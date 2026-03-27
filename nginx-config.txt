@@ -1,0 +1,80 @@
+# ZestSend Nginx 反向代理配置
+# 使用方法：
+# 1. 复制此配置到 /etc/nginx/sites-available/zestsend
+# 2. ln -s /etc/nginx/sites-available/zestsend /etc/nginx/sites-enabled/
+# 3. nginx -t && systemctl reload nginx
+# 4. 申请 SSL 证书：certbot --nginx -d your-domain.com
+
+server {
+    listen 18850;
+    server_name _;
+
+    # 临时配置（HTTP）- 建议后续配置 HTTPS
+    # ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    # ssl_protocols TLSv1.2 TLSv1.3;
+    
+    location / {
+        proxy_pass http://localhost:18850;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        
+        # 限制请求大小（防止大文件攻击）
+        client_max_body_size 100M;
+    }
+    
+    # WebSocket 支持（WebRTC 信令）
+    location /api/ {
+        proxy_pass http://localhost:18850;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+# -----------------------------------------------------------------------------
+# HTTPS 配置（推荐）
+# -----------------------------------------------------------------------------
+# 申请证书后使用此配置：
+#
+# server {
+#     listen 443 ssl http2;
+#     server_name your-domain.com;
+#     
+#     ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+#     ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+#     ssl_protocols TLSv1.2 TLSv1.3;
+#     ssl_prefer_server_ciphers on;
+#     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+#     
+#     # HSTS
+#     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+#     
+#     # 其他安全头
+#     add_header X-Frame-Options "SAMEORIGIN" always;
+#     add_header X-Content-Type-Options "nosniff" always;
+#     add_header X-XSS-Protection "1; mode=block" always;
+#     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+#     
+#     location / {
+#         proxy_pass http://localhost:18850;
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection 'upgrade';
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#         proxy_cache_bypass $http_upgrade;
+#         client_max_body_size 100M;
+#     }
+# }
